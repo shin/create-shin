@@ -1,0 +1,42 @@
+{
+  "name": "create-shin",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "A tool that creates template starters for personal projects",
+  "author": "Shin",
+  "license": "MIT",
+  "bin": {
+    "create-shin": "bin/index.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "dist",
+    "templates",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "dev": "unbuild --watch",
+    "build": "unbuild",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shin/create-shin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shin/create-shin/issues"
+  },
+  "homepage": "https://github.com/shin/create-shin/#README.md",
+  "devDependencies": {
+    "@clack/prompts": "^0.10.0",
+    "@types/cross-spawn": "^6.0.6",
+    "@types/node": "^22.14.0",
+    "cross-spawn": "^7.0.6",
+    "mri": "^1.2.0",
+    "picocolors": "^1.1.1",
+    "typescript": "^5.8.3",
+    "unbuild": "^3.5.0"
+  }
+}
