@@ -1,7 +1,10 @@
 {
   "name": "create-shin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "description": "A tool that creates template starters for personal projects",
   "author": "Shin",
   "license": "MIT",
@@ -17,9 +20,10 @@
     "README.md"
   ],
   "scripts": {
+    "preinstall": "node ./scripts/check-node-version.cjs",
     "dev": "unbuild --watch",
     "build": "unbuild",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm i && npm run build"
   },
   "repository": {
     "type": "git",
@@ -36,6 +40,7 @@
     "cross-spawn": "^7.0.6",
     "mri": "^1.2.0",
     "picocolors": "^1.1.1",
+    "semver": "^7.7.1",
     "typescript": "^5.8.3",
     "unbuild": "^3.5.0"
   }
