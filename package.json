@@ -1,6 +1,6 @@
 {
   "name": "create-shin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "A tool that creates template starters for personal projects",
   "author": "Shin",
