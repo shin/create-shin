@@ -101,7 +101,7 @@ async function init() {
   const argTargetDir = argv._[0]
     ? formatTargetDir(String(argv._[0]))
     : undefined
-  const argTemplate = argv.template ? `template-${argv.template}` : undefined
+  const argTemplate = argv.template
   const argOverwrite = argv.overwrite
 
   const help = argv.help
