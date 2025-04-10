@@ -1,0 +1,73 @@
+name: NPM Publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+
+jobs:
+  validate-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Check package version
+        id: check-version
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "Package version: $PACKAGE_VERSION"
+
+          # Check if version is prerelease (contains hyphen)
+          if [[ $PACKAGE_VERSION == *"-"* ]]; then
+            echo "Prerelease version detected, stopping process."
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check if git tag already exists for this version
+          if git tag -l "v$PACKAGE_VERSION" | grep -q .; then
+            echo "Tag v$PACKAGE_VERSION already exists, stopping process."
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Determine if version is major, minor, patch
+          if [[ $PACKAGE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Valid semantic version detected: $PACKAGE_VERSION"
+            echo "valid_version=true" >> $GITHUB_OUTPUT
+            echo "version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Invalid version format, stopping process."
+            echo "valid_version=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+      - name: Create Git tag
+        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        run: |
+          VERSION=${{ steps.check-version.outputs.version }}
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
+          echo "Created and pushed tag v$VERSION"
+
+      - name: Install dependencies
+        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        run: npm ci
+
+      - name: Publish to NPM
+        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
