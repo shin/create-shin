@@ -36,7 +36,6 @@ npm create shin@latest
 - cross-spawn
 - mri
 - picocolors
-- semver
 - unbuild
 
 ## License
