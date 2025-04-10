@@ -5,7 +5,7 @@ A tool that creates template starters for personal projects
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#Usage)
+- [Templates](#templates)
 - [Dependencies](#dependencies)
 - [License](#license)
 
@@ -17,11 +17,13 @@ A tool that creates template starters for personal projects
 npm create shin@latest
 ```
 
-## Currently supported template presets include:
+## Templates
+
+### Currently supported templates:
 
 - ts
 
-## Upcoming support templates:
+### Upcoming support templates:
 
 - excel
 - module
@@ -34,6 +36,7 @@ npm create shin@latest
 - cross-spawn
 - mri
 - picocolors
+- semver
 - unbuild
 
 ## License

@@ -153,7 +153,7 @@ async function init() {
     const framework = await prompts.select({
       message: hasInvalidArgTemplate
         ? `"${argTemplate}" isn't a valid template. Please choose from below: `
-        : "Select a framework:",
+        : "Select a template:",
       options: FRAMEWORKS.map((framework) => {
         const frameworkColor = framework.color
         return {
