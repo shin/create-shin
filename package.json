@@ -23,7 +23,7 @@
     "preinstall": "node ./scripts/check-node-version.cjs",
     "dev": "unbuild --watch",
     "build": "unbuild",
-    "prepublishOnly": "npm i && npm run build"
+    "prepublishOnly": "npm ci && npm run build"
   },
   "repository": {
     "type": "git",
