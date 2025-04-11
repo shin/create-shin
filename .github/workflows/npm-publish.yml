@@ -57,7 +57,7 @@ jobs:
 
       - name: Install dependencies
         if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
-        run: npm i
+        run: npm ci
 
       - name: Build package
         if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
