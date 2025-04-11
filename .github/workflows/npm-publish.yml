@@ -30,13 +30,6 @@ jobs:
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           echo "Package version: $PACKAGE_VERSION"
 
-          # Check if version is prerelease (contains hyphen)
-          if [[ $PACKAGE_VERSION == *"-"* ]]; then
-            echo "Prerelease version detected, stopping process."
-            echo "is_prerelease=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
           # Check if git tag already exists for this version
           if git tag -l "v$PACKAGE_VERSION" | grep -q .; then
             echo "Tag v$PACKAGE_VERSION already exists, stopping process."
@@ -56,15 +49,15 @@ jobs:
           fi
 
       - name: Install dependencies
-        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        if: ${{ steps.check-version.outputs.tag_exists != 'true' && steps.check-version.outputs.valid_version == 'true' }}
         run: npm ci
 
       - name: Build package
-        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        if: ${{ steps.check-version.outputs.tag_exists != 'true' && steps.check-version.outputs.valid_version == 'true' }}
         run: npm run build
 
       - name: Publish to NPM
-        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        if: ${{ steps.check-version.outputs.tag_exists != 'true' && steps.check-version.outputs.valid_version == 'true' }}
         id: npm-publish
         run: |
           npm publish
