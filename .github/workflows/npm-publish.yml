@@ -55,8 +55,25 @@ jobs:
             exit 0
           fi
 
-      - name: Create Git tag
+      - name: Install dependencies
         if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        run: npm i
+
+      - name: Build package
+        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        run: npm run build
+
+      - name: Publish to NPM
+        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
+        id: npm-publish
+        run: |
+          npm publish
+          echo "npm_publish_success=true" >> $GITHUB_OUTPUT
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+
+      - name: Create Git tag
+        if: ${{ steps.npm-publish.outputs.npm_publish_success == 'true' }}
         run: |
           VERSION=${{ steps.check-version.outputs.version }}
           git config --local user.email "action@github.com"
@@ -64,13 +81,3 @@ jobs:
           git tag -a "v$VERSION" -m "Release v$VERSION"
           git push origin "v$VERSION"
           echo "Created and pushed tag v$VERSION"
-
-      - name: Install dependencies
-        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
-        run: npm ci
-
-      - name: Publish to NPM
-        if: ${{ steps.check-version.outputs.valid_version == 'true' && steps.check-version.outputs.is_prerelease != 'true' && steps.check-version.outputs.tag_exists != 'true' }}
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
