@@ -44,14 +44,12 @@ prompts.intro(bgCyan(black(" create-shin ")))
 
 interface MriOptions {
   template?: string
+  overwrite?: boolean
   help?: boolean
-  overwrite?: Overwrite
 }
 
-type Overwrite = "yes" | "no" | "ignore" | undefined
-
 const argv = mri<MriOptions>(process.argv.slice(2), {
-  alias: { h: "help", t: "template" },
+  alias: { h: "help", t: "template", w: "overwrite" },
   boolean: ["help", "overwrite"],
   string: ["template"],
 })
@@ -59,17 +57,18 @@ const argv = mri<MriOptions>(process.argv.slice(2), {
 const cwd = process.cwd()
 
 // prettier-ignore
-const helpMessage = `\
-Usage: create-shin [OPTION]... [DIRECTORY]
+const helpMessage = `
+   Usage: create-shin [OPTION]... [DIRECTORY]
 
-Create a new Shin project in TypeScript.
-With no arguments, start the CLI in interactive mode.
+   Create a new Shin project in TypeScript.
+   With no arguments, start the CLI in interactive mode.
 
-Options:
-  -t, --template NAME        use a specific template
+   Options:
+     -t, --template NAME        use a specific template
+     -w, --overwrite            overwrite if directory already exists
 
-Available templates:
-${blue      ('ts')}`
+   Available templates:
+     ${blue('ts')}                         typescript`
 
 type Framework = {
   name: string
@@ -109,6 +108,7 @@ async function init() {
   const help = argv.help
   if (help) {
     console.log(helpMessage)
+    prompts.outro("Done.")
     return
   }
 
@@ -273,11 +273,11 @@ async function init() {
   const cdProjectName = path.relative(cwd, root)
   doneMessage += `Done. Now run:\n`
   if (root !== cwd) {
-    doneMessage += `\n  cd ${cdProjectName}`
+    doneMessage += `\n   cd ${cdProjectName}`
   }
   switch (pkgManager) {
     default:
-      doneMessage += `\n  ${pkgManager} run dev`
+      doneMessage += `\n   ${pkgManager} run dev`
       break
   }
   prompts.outro(doneMessage)
@@ -299,8 +299,8 @@ const runMakeResources = async (
 
     try {
       if (overwrite === "yes") {
-        output += `  Remove all files in:\n\n`
-        output += `    ${rootDir}\n\n`
+        output += `   Remove all files in:\n\n`
+        output += `     ${rootDir}\n\n`
         emptyDir(rootDir)
       }
 
@@ -314,10 +314,10 @@ const runMakeResources = async (
 
         const stat = fs.statSync(srcPath)
         if (stat.isDirectory()) {
-          output += `  Create directory:    ${filePath}\n`
+          output += `   Create directory:    ${filePath}\n`
           copyDirectory(srcPath, destPath)
         } else {
-          output += `  Create file:         ${filePath}\n`
+          output += `   Create file:         ${filePath}\n`
           copyFile(srcPath, destPath)
         }
       })
@@ -327,7 +327,7 @@ const runMakeResources = async (
         path.resolve(rootDir, "package.json"),
         JSON.stringify(packageJson, null, 2) + "\n"
       )
-      output += `  Create file:         package.json\n`
+      output += `   Create file:         package.json\n`
 
       spin.stop(`${initialMessage} - Completed`)
       resolve(output)
@@ -356,13 +356,13 @@ const runInstall = async (
 
     process.stdout.on("data", (data) => {
       const message = data.toString().trim()
-      const messages = message.split("\n").map((row: string) => `  ${row} \n`)
+      const messages = message.split("\n").map((row: string) => `   ${row} \n`)
       output += messages.join("\n")
     })
 
     process.stderr.on("data", (data) => {
       const message = data.toString().trim()
-      const messages = message.split("\n").map((row: string) => `  ${row} \n`)
+      const messages = message.split("\n").map((row: string) => `   ${row} \n`)
       output += messages.join("\n")
     })
 
