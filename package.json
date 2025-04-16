@@ -21,9 +21,11 @@
     "README.md"
   ],
   "scripts": {
-    "preinstall": "node ./scripts/check-node-version.cjs",
+    "preinstall": "node ./scripts/dist/check-node-version.mjs",
     "dev": "unbuild --watch",
-    "build": "unbuild",
+    "build:main": "unbuild --config build.config.ts",
+    "build:scripts": "unbuild --config scripts.build.config.ts",
+    "build": "npm run build:main && npm run build:scripts",
     "prepublishOnly": "npm ci && npm run build"
   },
   "repository": {
@@ -34,16 +36,16 @@
     "url": "https://github.com/shin/create-shin/issues"
   },
   "homepage": "https://github.com/shin/create-shin/#README.md",
-  "dependencies": {
-    "semver": "^7.7.1"
-  },
   "devDependencies": {
     "@clack/prompts": "^0.10.0",
     "@types/cross-spawn": "^6.0.6",
     "@types/node": "^22.14.0",
+    "@types/semver": "^7.7.0",
     "cross-spawn": "^7.0.6",
+    "glob": "^11.0.1",
     "mri": "^1.2.0",
     "picocolors": "^1.1.1",
+    "semver": "^7.7.1",
     "typescript": "^5.8.3",
     "unbuild": "^3.5.0"
   }
