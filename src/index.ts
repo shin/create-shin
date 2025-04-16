@@ -45,8 +45,10 @@ prompts.intro(bgCyan(black(" create-shin ")))
 interface MriOptions {
   template?: string
   help?: boolean
-  overwrite?: boolean
+  overwrite?: Overwrite
 }
+
+type Overwrite = "yes" | "no" | "ignore" | undefined
 
 const argv = mri<MriOptions>(process.argv.slice(2), {
   alias: { h: "help", t: "template" },
@@ -125,7 +127,37 @@ async function init() {
     targetDir = formatTargetDir(projectName as string)
   }
 
-  // 2. Get package name
+  // 2. Handle directory if exist and not empty
+  let overwrite
+  if (fs.existsSync(targetDir) && !isEmpty(targetDir)) {
+    overwrite = argOverwrite
+      ? "yes"
+      : await prompts.select({
+          message:
+            (targetDir === "."
+              ? "Current directory"
+              : `Target directory "${targetDir}"`) +
+            ` is not empty. Please choose how to proceed:`,
+          options: [
+            {
+              label: "Cancel operation",
+              value: "no",
+            },
+            {
+              label: "Remove existing files and continue",
+              value: "yes",
+            },
+            {
+              label: "Ignore files and continue",
+              value: "ignore",
+            },
+          ],
+        })
+    if (prompts.isCancel(overwrite)) return cancel()
+    if (overwrite === "no") return cancel()
+  }
+
+  // 3. Get package name
   let packageName = path.basename(path.resolve(targetDir))
   if (!isValidPackageName(packageName)) {
     const packageNameResult = await prompts.text({
@@ -142,7 +174,7 @@ async function init() {
     packageName = packageNameResult
   }
 
-  // 3. Choose a framework and variant
+  // 4. Choose a framework and variant
   let template = argTemplate
   let hasInvalidArgTemplate = false
   if (argTemplate && !TEMPLATES.includes(argTemplate)) {
@@ -172,7 +204,7 @@ async function init() {
 
   const pkgManager = pkgInfo ? pkgInfo.name : "npm"
 
-  // 4. Make resources
+  // 5. Make resources
   const templateDir = path.resolve(
     __dirname,
     "..",
@@ -194,6 +226,7 @@ async function init() {
     packageJson.name = packageName
 
     const output0 = await runMakeResources(
+      overwrite,
       root,
       resourcesDir,
       files,
@@ -203,7 +236,7 @@ async function init() {
     console.log(output0)
   }
 
-  // 5. Install packages
+  // 6. Install packages
   interface InstallPackages {
     dependencies: string[]
     devDependencies: string[]
@@ -251,6 +284,7 @@ async function init() {
 }
 
 const runMakeResources = async (
+  overwrite: Overwrite,
   rootDir: string,
   sourceDir: string,
   sources: string[],
@@ -264,6 +298,12 @@ const runMakeResources = async (
     let output = "\n"
 
     try {
+      if (overwrite === "yes") {
+        output += `  Remove all files in:\n\n`
+        output += `    ${rootDir}\n\n`
+        emptyDir(rootDir)
+      }
+
       if (!fs.existsSync(rootDir)) {
         fs.mkdirSync(rootDir, { recursive: true })
       }
@@ -289,10 +329,10 @@ const runMakeResources = async (
       )
       output += `  Create file:         package.json\n`
 
-      spin.stop(`Resources created: - Completed`)
+      spin.stop(`${initialMessage} - Completed`)
       resolve(output)
     } catch (error) {
-      spin.stop(`Resources created: - Failed`)
+      spin.stop(`${initialMessage} - Failed`)
       reject(error)
     }
   })
