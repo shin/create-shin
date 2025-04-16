@@ -34,6 +34,9 @@
     "url": "https://github.com/shin/create-shin/issues"
   },
   "homepage": "https://github.com/shin/create-shin/#README.md",
+  "dependencies": {
+    "semver": "^7.7.1"
+  },
   "devDependencies": {
     "@clack/prompts": "^0.10.0",
     "@types/cross-spawn": "^6.0.6",
@@ -41,7 +44,6 @@
     "cross-spawn": "^7.0.6",
     "mri": "^1.2.0",
     "picocolors": "^1.1.1",
-    "semver": "^7.7.1",
     "typescript": "^5.8.3",
     "unbuild": "^3.5.0"
   }
