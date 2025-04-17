@@ -54,6 +54,8 @@ const argv = mri<MriOptions>(process.argv.slice(2), {
   string: ["template"],
 })
 
+type Overwrite = symbol | "yes" | "no" | "ignore" | undefined
+
 const cwd = process.cwd()
 
 // prettier-ignore
@@ -128,7 +130,8 @@ async function init() {
   }
 
   // 2. Handle directory if exist and not empty
-  let overwrite
+
+  let overwrite: Overwrite
   if (fs.existsSync(targetDir) && !isEmpty(targetDir)) {
     overwrite = argOverwrite
       ? "yes"

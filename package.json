@@ -1,13 +1,13 @@
 {
   "name": "create-shin",
   "version": "0.0.9",
+  "description": "A tool that creates template starters for personal projects",
+  "author": "Shin",
+  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
-  "description": "A tool that creates template starters for personal projects",
-  "author": "Shin",
-  "license": "MIT",
   "bin": {
     "create-shin": "bin/index.js"
   },
@@ -25,7 +25,7 @@
     "dev": "unbuild --watch",
     "build:main": "unbuild --config build.config.ts",
     "build:scripts": "unbuild --config scripts.build.config.ts",
-    "build": "npm run build:main && npm run build:scripts",
+    "build": "npm run build:main && npm run build:scripts && tsc --noEmit",
     "prepublishOnly": "npm ci && npm run build"
   },
   "repository": {
