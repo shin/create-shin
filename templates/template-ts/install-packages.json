@@ -1,7 +1,9 @@
 {
   "dependencies": [],
   "devDependencies": [
+    "@types/node",
+    "glob",
     "typescript",
-    "@types/node"
+    "unbuild"
   ]
 }

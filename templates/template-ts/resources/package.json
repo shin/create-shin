@@ -1,14 +1,13 @@
 {
   "name": "create-shin",
   "version": "0.0.0",
-  "type": "module",
   "description": "",
   "author": "Shin",
   "license": "MIT",
-  "main": "dist/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "tsc --watch",
-    "build": "tsc",
-    "main": "node dist/main.js"
+    "dev": "unbuild --watch",
+    "build": "unbuild --config build.config.ts",
+    "main": "node dist/main.mjs"
   }
 }
