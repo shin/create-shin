@@ -10,21 +10,8 @@ async function main() {
     .version(packageJson.version, "-v, --version", "display the version number")
 
   program.addCommand(init)
-
   const args = process.argv.slice(2)
-
-  // Check if first arg is a known subcommand
-  const knownCommands = program.commands.map((cmd) => cmd.name())
-  const firstArg = args[0]
-
-  const isKnownCommand = knownCommands.includes(firstArg)
-
-  if (!firstArg || firstArg.startsWith("-") || !isKnownCommand) {
-    // Default to running the init command if no arguments are given
-    program.parse(["node", "create-shin", "init", ...args])
-  } else {
-    program.parse(process.argv)
-  }
+  program.parse(["node", "create-shin", "init", ...args])
 }
 
 main()

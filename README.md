@@ -4,17 +4,23 @@ A tool that creates template starters for personal projects
 
 ## Table of Contents
 
-- [Installation](#installation)
+- [Usafe](#usage)
 - [Templates](#templates)
 - [Dependencies](#dependencies)
 - [License](#license)
 
-## Installation
+## Usage
 
-### Install with Github PAT
+### Run command
 
 ```bash
 npm create shin@latest
+```
+
+or
+
+```bash
+npx create-shin@latest
 ```
 
 ## Templates
@@ -33,8 +39,8 @@ npm create shin@latest
 ## Dependencies
 
 - @clack/prompts
+- commander
 - cross-spawn
-- mri
 - picocolors
 - unbuild
 
