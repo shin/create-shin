@@ -7,6 +7,12 @@
     /* Paths and Output */
     "rootDir": "./src",
     "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
     /* Linting and Type Safety */
     "strict": true,
     "forceConsistentCasingInFileNames": true,
