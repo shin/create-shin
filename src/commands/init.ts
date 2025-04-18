@@ -207,7 +207,8 @@ Available templates:
           "Making resources",
           packageJson
         )
-        console.log(output0)
+
+        // console.log(output0)
       }
 
       // 6. Install packages
@@ -225,25 +226,30 @@ Available templates:
 
       // Install dependencies
       if (installPackages && installPackages.dependencies.length > 0) {
-        const output1 = await runInstall(
+        const { success, message } = await runInstall(
           root,
           pkgManager,
-          ["install", ...installPackages.dependencies],
+          ["install"],
+          installPackages.dependencies,
           "Installing dependencies"
         )
 
-        console.log(output1)
+        // prompts.note(message)
+        // console.log(message)
       }
 
       // Install devDependencies
       if (installPackages && installPackages.devDependencies.length > 0) {
-        const output2 = await runInstall(
+        const { success, message } = await runInstall(
           root,
           pkgManager,
-          ["install", "-D", ...installPackages.devDependencies],
+          ["install", "-D"],
+          installPackages.devDependencies,
           "Installing devDependencies"
         )
-        console.log(output2)
+
+        // prompts.note(message)
+        // console.log(message)
       }
 
       let doneMessage = ""
@@ -260,6 +266,12 @@ Available templates:
       prompts.outro(doneMessage)
     }
 
+    interface RunMakeResourcesPromise {
+      success: boolean
+      message?: string
+      error?: string
+    }
+
     const runMakeResources = async (
       overwrite: Overwrite,
       rootDir: string,
@@ -268,16 +280,16 @@ Available templates:
       initialMessage: string,
       packageJson: any
     ) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<RunMakeResourcesPromise>((resolve, reject) => {
         const spin = prompts.spinner()
         spin.start(initialMessage)
 
-        let output = "\n"
+        let infoMessage = ""
 
         try {
           if (overwrite === "yes") {
-            output += `   Remove all files in:\n\n`
-            output += `     ${rootDir}\n\n`
+            infoMessage += `Remove all files in:\n\n`
+            infoMessage += `  ${rootDir}\n\n`
             emptyDir(rootDir)
           }
 
@@ -291,10 +303,10 @@ Available templates:
 
             const stat = fs.statSync(srcPath)
             if (stat.isDirectory()) {
-              output += `   Create directory:    ${filePath}\n`
+              infoMessage += `Create directory:    ${filePath}\n`
               copyDirectory(srcPath, destPath)
             } else {
-              output += `   Create file:         ${filePath}\n`
+              infoMessage += `Create file:         ${filePath}\n`
               copyFile(srcPath, destPath)
             }
           })
@@ -304,62 +316,91 @@ Available templates:
             path.resolve(rootDir, "package.json"),
             JSON.stringify(packageJson, null, 2) + "\n"
           )
-          output += `   Create file:         package.json\n`
+          infoMessage += `Create file:         package.json\n`
 
           spin.stop(`${initialMessage} - Completed`)
-          resolve(output)
+          prompts.log.info(infoMessage)
+
+          resolve({
+            success: true,
+            message: infoMessage,
+          })
         } catch (error) {
           spin.stop(`${initialMessage} - Failed`)
-          reject(error)
+
+          reject({
+            success: false,
+            error: error,
+          })
         }
       })
+    }
+
+    interface RunInstallPromise {
+      success: boolean
+      message?: string
+      error?: string
     }
 
     const runInstall = async (
       rootDir: string,
       command: string,
       args: string[],
+      packageNames: string[],
       initialMessage: string
     ) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<RunInstallPromise>((resolve, reject) => {
         const spin = prompts.spinner()
         spin.start(initialMessage)
+
+        const infoMessage = packageNames
+          .map((name: string) => `- ${name}`)
+          .join("\n")
+
+        args.push(...packageNames)
 
         const process = spawn(command, args, {
           cwd: rootDir,
           shell: true,
         })
-        let output = "\n"
+
+        let spawnOutput = ""
 
         process.stdout.on("data", (data) => {
           const message = data.toString().trim()
-          const messages = message
-            .split("\n")
-            .map((row: string) => `   ${row} \n`)
-          output += messages.join("\n")
+          const messages = message.split("\n").map((row: string) => `${row} \n`)
+          spawnOutput += messages.join("\n")
         })
 
         process.stderr.on("data", (data) => {
           const message = data.toString().trim()
-          const messages = message
-            .split("\n")
-            .map((row: string) => `   ${row} \n`)
-          output += messages.join("\n")
+          const messages = message.split("\n").map((row: string) => `${row} \n`)
+          spawnOutput += messages.join("\n")
         })
 
         process.on("close", (code) => {
           if (code === 0) {
             spin.stop(`${initialMessage} - Completed`)
-            resolve(output)
+            prompts.log.info(infoMessage)
+
+            resolve({ success: true, message: spawnOutput })
           } else {
             spin.stop(`${initialMessage} - Failed with code ${code}`)
-            reject(new Error(`Process exited with code ${code}`))
+            prompts.log.error(`Process exited with code ${code}`)
+
+            reject({
+              success: false,
+              error: new Error(`Process exited with code ${code}`),
+            })
           }
         })
 
-        process.on("error", (err) => {
-          spin.stop(`${initialMessage} - Error: ${err.message}`)
-          reject(err)
+        process.on("error", (error) => {
+          spin.stop(`${initialMessage} - Error: ${error.message}`)
+          reject({
+            success: false,
+            error: error,
+          })
         })
       })
     }
