@@ -10,8 +10,20 @@ async function main() {
     .version(packageJson.version, "-v, --version", "display the version number")
 
   program.addCommand(init)
+
   const args = process.argv.slice(2)
-  program.parse(["node", "create-shin", "init", ...args])
+  const knownCommands = program.commands.map((cmd) => cmd.name())
+  const firstArg = args[0]
+
+  const shouldRunDefault =
+    !firstArg || firstArg.startsWith("-") || !knownCommands.includes(firstArg)
+
+  // Run default 'init' command if no known command is specified
+  const finalArgs = shouldRunDefault
+    ? ["node", "create-shin", "init", ...args]
+    : process.argv
+
+  await program.parseAsync(finalArgs)
 }
 
-main()
+await main()
