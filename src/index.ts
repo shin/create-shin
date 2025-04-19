@@ -18,12 +18,15 @@ async function main() {
   const shouldRunDefault =
     !firstArg || firstArg.startsWith("-") || !knownCommands.includes(firstArg)
 
-  // Run default 'init' command if no known command is specified
-  const finalArgs = shouldRunDefault
-    ? ["node", "create-shin", "init", ...args]
-    : process.argv
+  const isHelp =
+    args.includes("--help") || args.includes("-h") || firstArg === "help"
 
-  await program.parseAsync(finalArgs)
+  // Run default 'init' command if no known command is specified
+  if (shouldRunDefault && !isHelp) {
+    await program.parseAsync(["node", "create-shin", "init", ...args])
+  } else {
+    await program.parseAsync(process.argv)
+  }
 }
 
 await main()
