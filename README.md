@@ -4,7 +4,7 @@ A tool that creates template starters for personal projects
 
 ## Table of Contents
 
-- [Usafe](#usage)
+- [Usage](#usage)
 - [Templates](#templates)
 - [Dependencies](#dependencies)
 - [License](#license)
