@@ -24,7 +24,7 @@ export default defineBuildConfig({
         alias({
           entries: [
             {
-              find: "@/",
+              find: "@",
               replacement: path.resolve(baseDir),
             },
           ],
