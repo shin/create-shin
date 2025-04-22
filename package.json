@@ -17,6 +17,7 @@
     "src",
     "dist",
     "templates",
+    "templates/template-ts/resources/.gitignore",
     "package.json",
     "README.md"
   ],
