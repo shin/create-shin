@@ -318,6 +318,14 @@ Available templates:
           )
           infoMessage += `Create file:         package.json\n`
 
+          // Rename .gitignore file
+          fs.renameSync(
+            path.resolve(rootDir, "_gitignore"),
+            path.resolve(rootDir, ".gitignore")
+          )
+
+          infoMessage += `Rename file:         _gitignore -> .gitignore \n`
+
           spin.stop(`${initialMessage} - Completed`)
           prompts.log.info(infoMessage)
 
