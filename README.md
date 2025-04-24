@@ -27,14 +27,14 @@ npx create-shin@latest
 
 ### Currently supported templates:
 
-- ts
+- ts - Typescript
+- db - Database
 
 ### Upcoming support templates:
 
-- excel
-- module
-- full-stack
-- graphql-server
+- ga - Graphql-API
+- fs - Full-Stack
+- excel - Exceljs
 
 ## Dependencies
 
