@@ -8,6 +8,6 @@
   "scripts": {
     "dev": "unbuild --watch",
     "build": "unbuild --config build.config.ts",
-    "main": "node dist/main.mjs"
+    "start": "node dist/index.mjs"
   }
 }
