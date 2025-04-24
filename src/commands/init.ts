@@ -57,7 +57,8 @@ export const init = new Command()
     "after",
     `
 Available templates:
-  ${blue("ts")}                      typescript
+  ${blue("ts")}                      Typescript
+  ${blueBright("db")}                Database
     `
   )
   .action(async (directory, options) => {
@@ -71,7 +72,12 @@ Available templates:
       {
         name: "ts",
         display: "Typescript",
-        color: white,
+        color: blue,
+      },
+      {
+        name: "db",
+        display: "Database",
+        color: blueBright,
       },
     ]
 

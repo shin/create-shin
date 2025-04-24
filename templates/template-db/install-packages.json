@@ -1,0 +1,15 @@
+{
+  "dependencies": [
+    "dotenv",
+    "drizzle-orm",
+    "pg"
+  ],
+  "devDependencies": [
+    "@types/node",
+    "@types/pg",
+    "drizzle-kit",
+    "glob",
+    "typescript",
+    "unbuild"
+  ]
+}

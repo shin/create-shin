@@ -1,0 +1,17 @@
+{
+  "name": "template-db",
+  "version": "0.0.0",
+  "description": "",
+  "author": "Shin",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "docker:up": "docker compose up -d",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
+    "db:generate": "drizzle-kit generate",
+    "dev": "unbuild --watch",
+    "build": "unbuild --config build.config.ts",
+    "start": "node dist/index.mjs"
+  }
+}

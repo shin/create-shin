@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    /* Target and Module */
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": [
+      "node"
+    ],
+    /* Paths and Output */
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    /* Linting and Type Safety */
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    /* Module Interop */
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    /* Source Maps and Declaration */
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    /* Library Checking */
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
