@@ -1,8 +1,11 @@
 # Misc
 .DS_Store
 
+# Env
+.env
+
 # Dependencies
-/node_modules
+node_modules
 
 # Build
-/dist
+dist
