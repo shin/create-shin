@@ -10,6 +10,7 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:generate": "drizzle-kit generate",
+    "db:seed": "node dist/seed/index.mjs",
     "dev": "unbuild --watch",
     "build": "unbuild --config build.config.ts",
     "start": "node dist/index.mjs"
